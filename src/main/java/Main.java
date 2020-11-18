@@ -7,15 +7,15 @@ public class Main {
         //source folder
         final File folder = new File("C:/photos");
 
-        GettingData gettingData = new GettingData();
+        Services services = new Services();
         //Getting files checksums from folder to List
-        List<String> listFromFolder = gettingData.getFilesFromFolder(folder);
+        List<String> listFromFolder = services.getFilesFromFolder(folder);
 
         //Searching duplicates in list and creating list of duplicates
-        List<String> listWithDuplicate = gettingData.findDuplicate(listFromFolder);
+        List<String> listWithDuplicate = services.findDuplicate(listFromFolder);
 
         //Read files from list and delete from folder
-        gettingData.removeFilesFromFolder(listWithDuplicate, folder);
+        services.removeFilesFromFolder(listWithDuplicate, folder);
 
 
 

@@ -9,8 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class GettingData {
-    private static final Logger logger = Logger.getLogger(GettingData.class.getName());
+public class Services {
+    private static final Logger logger = Logger.getLogger(Services.class.getName());
 
     public List<String> getFilesFromFolder(final File folder) {
         List<String> photoList = new ArrayList<String>();
