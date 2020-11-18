@@ -82,7 +82,7 @@ public class Services {
 
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.isDirectory()) {
-                getFilesFromFolder(fileEntry);
+                removeFilesFromFolder(listWithDuplicate, fileEntry);
             } else {
                 if(listWithDuplicate.contains(getFileChecksum(fileEntry))){
                     listWithDuplicate.remove(getFileChecksum(fileEntry));
