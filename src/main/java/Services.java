@@ -12,19 +12,21 @@ import java.util.logging.Logger;
 public class Services {
     private static final Logger logger = Logger.getLogger(Services.class.getName());
 
-    public List<String> getFilesFromFolder(final File folder) {
-        List<String> photoList = new ArrayList<String>();
+    public List<String> getFilesFromFolder(List<String>photoList, final File folder) {
+
 
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.isDirectory()) {
-                getFilesFromFolder(fileEntry);
+                getFilesFromFolder(photoList, fileEntry);
             } else {
                 logger.info("File " + fileEntry.getName() + " Scanned ");
                 photoList.add(getFileChecksum(fileEntry));
+
             }
         }
         return photoList;
     }
+
 
 
     private static String getFileChecksum(File file) {
@@ -79,11 +81,13 @@ public class Services {
 
 
     public void removeFilesFromFolder(List<String> listWithDuplicate, final File folder) {
+        System.out.println(listWithDuplicate.toString());
 
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.isDirectory()) {
                 removeFilesFromFolder(listWithDuplicate, fileEntry);
             } else {
+                System.out.println(getFileChecksum(fileEntry));
                 if(listWithDuplicate.contains(getFileChecksum(fileEntry))){
                     listWithDuplicate.remove(getFileChecksum(fileEntry));
                     fileEntry.delete();
