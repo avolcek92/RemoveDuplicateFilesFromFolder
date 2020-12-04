@@ -7,32 +7,31 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public class Services {
     private static final Logger logger = Logger.getLogger(Services.class.getName());
+    private static Set<String> uniquePhotoList = new HashSet<>();
 
-    public List<String> getFilesFromFolder(List<String>photoList, final File folder) {
-
-
+    public void getFilesFromFolder(final File folder) {
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.isDirectory()) {
-                getFilesFromFolder(photoList, fileEntry);
+                getFilesFromFolder(fileEntry);
             } else {
                 logger.info("File " + fileEntry.getName() + " Scanned ");
-                photoList.add(getFileChecksum(fileEntry));
+                String photo = getFileChecksum(fileEntry);
+                uniquePhotoList.add(photo);
 
             }
         }
-        return photoList;
+        removeFilesFromFolder(folder);
     }
-
 
 
     private static String getFileChecksum(File file) {
 
         String checkSum = null;
-
         try {
             FileInputStream fis = new FileInputStream(file);
             MessageDigest digest = MessageDigest.getInstance("MD5");
@@ -62,34 +61,12 @@ public class Services {
 
     }
 
-    public List<String> findDuplicate( List<String> listFromFolder){
-        List<String> listWithoutDuplicates = new ArrayList<>();
-        List<String> listWithDuplicates = new ArrayList<>();
-
-        for (String fileChecksum : listFromFolder) {
-            if(!listWithoutDuplicates.contains(fileChecksum)){
-                listWithoutDuplicates.add(fileChecksum);
-            }
-            else {
-                logger.info("Duplicate with checksum " + fileChecksum + " found" );
-                listWithDuplicates.add(fileChecksum);
-
-            }
-        }
-        return listWithDuplicates;
-    }
-
-
-    public void removeFilesFromFolder(List<String> listWithDuplicate, final File folder) {
-        System.out.println(listWithDuplicate.toString());
-
+    public void removeFilesFromFolder(final File folder) {
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            if (fileEntry.isDirectory()) {
-                removeFilesFromFolder(listWithDuplicate, fileEntry);
-            } else {
-                System.out.println(getFileChecksum(fileEntry));
-                if(listWithDuplicate.contains(getFileChecksum(fileEntry))){
-                    listWithDuplicate.remove(getFileChecksum(fileEntry));
+            if(!fileEntry.isDirectory()) {
+                if (uniquePhotoList.contains(getFileChecksum(fileEntry))) {
+                    uniquePhotoList.remove(getFileChecksum(fileEntry));
+                } else {
                     fileEntry.delete();
                     logger.info("File " + fileEntry.getName() + " Deleted ");
                 }
@@ -97,6 +74,7 @@ public class Services {
         }
     }
 }
+
 
 
 
